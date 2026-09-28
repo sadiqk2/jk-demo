@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <rect width="800" height="800" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="800" height="800" fill="none" stroke="#E3E8F0" stroke-width="2"/>
+  <g fill="none" stroke="#052B72" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity=".9">
+    <path d="M400 250v260"/>
+    <path d="M400 330c-52 0-84-34-84-84 52 0 84 34 84 84Z"/>
+    <path d="M400 330c52 0 84-34 84-84-52 0-84 34-84 84Z"/>
+    <path d="M400 410c-52 0-84-34-84-84 52 0 84 34 84 84Z"/>
+    <path d="M400 410c52 0 84-34 84-84-52 0-84 34-84 84Z"/>
+    <path d="M400 490c-52 0-84-34-84-84 52 0 84 34 84 84Z"/>
+    <path d="M400 490c52 0 84-34 84-84-52 0-84 34-84 84Z"/>
+  </g>
+  <text x="400" y="600" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="34" font-weight="700" fill="#052B72">JK KRISHI VIKAS</text>
+  <text x="400" y="648" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="22" font-weight="500" fill="#5B6472">Product photo — catalogue upload pending</text>
+</svg>
