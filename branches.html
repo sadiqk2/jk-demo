@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Showrooms & Dealers across Kashmir | JK Krishi Vikas Cooperative Ltd</title>
+<meta name="description" content="35+ company-owned JKKVC showrooms and 100+ dealers across Srinagar, Baramulla, Anantnag, Shopian, Kulgam, Kupwara, Ganderbal, Budgam, Pulwama, Bandipora.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="branches">
+<div id="header"></div>
+
+<section style="background:var(--blue);color:#fff;padding:46px 0">
+  <div class="wrap">
+    <span class="overline" style="color:#9DB4E4">Our network</span>
+    <h1 style="font-size:clamp(26px,3.6vw,40px)">35+ showrooms. 100+ dealers. Every district.</h1>
+    <p style="color:#C9D6EF;max-width:720px;margin-top:10px">Wherever your farm is in the Kashmir Valley, a JK Krishi Vikas store is within reach — with live machines, genuine spares and an agronomy counter.</p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="overline">Showrooms by district</span>
+    <h2 class="sec-title">Find your nearest store</h2>
+    <div class="d-grid" id="dGrid"></div>
+    <div class="note-box" style="margin-top:22px"><b>Note:</b> showroom list shown is representative for the design preview; the production site will pull the live store list (with maps, phone numbers and Google Business profiles) from your CRM.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center">
+    <div>
+      <span class="overline">Dealer programme</span>
+      <h2 class="sec-title">Become a JKKVC dealer</h2>
+      <p class="sec-sub">Join 100+ retailers across the Valley. Dealer margins, seasonal stock support, demo units and co-branded marketing — our sales desk onboards new partners every month.</p>
+      <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+        <a class="btn" href="contact.html">Apply for dealership</a>
+        <a class="btn ghost" href="tel:+919858414134">Call the sales desk</a>
+      </div>
+    </div>
+    <div class="hero-fig"><div class="ph"><img src="img/orchard-2.jpg" alt="Kashmiri farmer in an apple orchard" style="height:300px;width:100%;object-fit:cover"></div></div>
+  </div>
+</section>
+
+<div id="footer"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+window.pageInit = () => {
+  $('#dGrid').innerHTML = BRANCHES.map(d=>`
+    <div class="d-card"><h3>${d.district} <i>${d.count} showrooms</i></h3>
+      <ul>${d.towns.map(t=>`<li>${t}</li>`).join('')}</ul></div>`).join('');
+};
+</script>
+</body>
+</html>

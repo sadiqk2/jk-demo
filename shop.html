@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop Agriculture Machinery & Agri Inputs Kashmir | JK Krishi Vikas Cooperative Ltd</title>
+<meta name="description" content="Buy brush cutters, chain saws, tillers, lawn mowers, sprayers, garden tools, fertilizers and seeds online in Kashmir. Genuine brands, GST invoice, valley-wide delivery.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="shop">
+<div id="header"></div>
+
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / <b>Shop</b></nav>
+</div>
+
+<div class="wrap shop-layout">
+  <aside class="side" aria-label="Filters">
+    <h5>Search</h5>
+    <div class="search-box" style="display:flex;width:100%"><input id="q" placeholder="Model, brand, use…" aria-label="Search products"></div>
+    <h5>Categories</h5>
+    <div id="catList"></div>
+    <h5>Brands</h5>
+    <div id="brandList"></div>
+    <div style="margin-top:14px"><button class="btn ghost sm block" id="clear">Clear all filters</button></div>
+  </aside>
+
+  <div>
+    <div class="shop-top">
+      <span class="count" id="count"></span>
+      <select id="sort" aria-label="Sort products">
+        <option value="pop">Sort: Featured</option>
+        <option value="lo">Price: low → high</option>
+        <option value="hi">Price: high → low</option>
+        <option value="az">Name: A → Z</option>
+      </select>
+    </div>
+    <div class="p-grid" id="grid" style="margin-top:0"></div>
+  </div>
+</div>
+
+<div id="footer"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+window.pageInit = () => {
+  const params = new URLSearchParams(location.search);
+  const state = { cat: params.get('cat')||'', q: (params.get('q')||'').toLowerCase(), brands: new Set(), sort: 'pop' };
+  $('#q').value = state.q;
+
+  const counts = {}; PRODUCTS.forEach(p=>counts[p.cat]=(counts[p.cat]||0)+1);
+  $('#catList').innerHTML = [''].concat(CATEGORIES.map(c=>c.name)).map(c=>
+    `<div class="cat-link" data-cat="${c}">${c||'All products'}<i>${c?(counts[c]||0):PRODUCTS.length}</i></div>`).join('');
+  $('#brandList').innerHTML = BRANDS.map(b=>
+    `<label class="cat-link" style="cursor:pointer"><span style="display:flex;gap:8px;align-items:center"><input type="checkbox" value="${b}" style="accent-color:var(--blue)"> ${b}</span></label>`).join('');
+
+  const apply = () => {
+    let list = PRODUCTS.filter(p =>
+      (!state.cat || p.cat===state.cat) &&
+      (!state.brands.size || state.brands.has(p.brand)) &&
+      (!state.q || (p.name+' '+p.brand+' '+p.cat).toLowerCase().includes(state.q)));
+    if(state.sort==='lo') list=[...list].sort((a,b)=>a.price-b.price);
+    if(state.sort==='hi') list=[...list].sort((a,b)=>b.price-a.price);
+    if(state.sort==='az') list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
+    $('#count').innerHTML = `Showing <b>${list.length}</b> of ${PRODUCTS.length} products` + (state.cat?` in <b>${state.cat}</b>`:'');
+    renderGrid($('#grid'), list);
+    $$('.cat-link[data-cat]').forEach(el=>el.classList.toggle('on', el.dataset.cat===state.cat));
+  };
+
+  document.addEventListener('click', e => {
+    const el = e.target.closest('.cat-link[data-cat]'); if(!el) return;
+    state.cat = el.dataset.cat; apply();
+  });
+  $('#brandList').addEventListener('change', e => {
+    e.target.checked ? state.brands.add(e.target.value) : state.brands.delete(e.target.value); apply();
+  });
+  $('#q').addEventListener('input', e => { state.q = e.target.value.toLowerCase(); apply(); });
+  $('#sort').addEventListener('change', e => { state.sort = e.target.value; apply(); });
+  $('#clear').onclick = () => { state.cat=''; state.q=''; state.brands.clear(); $('#q').value='';
+    $$('#brandList input').forEach(i=>i.checked=false); apply(); };
+  apply();
+};
+</script>
+</body>
+</html>

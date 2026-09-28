@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cart & Checkout | JK Krishi Vikas Cooperative Ltd</title>
+<meta name="description" content="Secure checkout — UPI, cards, net-banking and Cash on Delivery. JK Krishi Vikas Cooperative Ltd, Kashmir.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="shop">
+<div id="header"></div>
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / <b>Cart & Checkout</b></nav>
+  <div class="cart-layout">
+    <div>
+      <div class="cart-box">
+        <div class="hd">Your Cart</div>
+        <div id="rows"></div>
+      </div>
+      <div class="cart-box" style="margin-top:20px">
+        <div class="hd">Delivery & Payment</div>
+        <div style="padding:18px">
+          <div class="form-grid">
+            <div class="field"><label>Full name</label><input placeholder="e.g. Farooq Jan Para"></div>
+            <div class="field"><label>Mobile (WhatsApp)</label><input placeholder="+91 …"></div>
+            <div class="field"><label>District</label><select><option>Srinagar</option><option>Budgam</option><option>Baramulla</option><option>Kupwara</option><option>Bandipora</option><option>Ganderbal</option><option>Anantnag</option><option>Pulwama</option><option>Shopian</option><option>Kulgam</option></select></div>
+            <div class="field"><label>Delivery / nearest showroom</label><input placeholder="Town or showroom pickup"></div>
+            <div class="field full"><label>Address / orchard location</label><textarea rows="2" placeholder="Village, tehsil, landmark…"></textarea></div>
+          </div>
+
+          <h3 style="font-size:14px;color:var(--blue);margin:18px 0 6px">Payment method</h3>
+          <label class="pay-opt"><input type="radio" name="pay" checked>
+            <span><b>Razorpay — UPI / Cards / Net-banking</b><span>Pay via Google Pay, PhonePe, Paytm, any debit/credit card or net-banking. 2% gateway fee borne by JKKVC.</span></span></label>
+          <label class="pay-opt"><input type="radio" name="pay">
+            <span><b>Cash on Delivery</b><span>Available on orders up to ₹50,000 in serviceable valley pin codes.</span></span></label>
+          <label class="pay-opt"><input type="radio" name="pay">
+            <span><b>Bank Transfer (Dealer / Bulk accounts)</b><span>J&K Bank current account — invoice raised with GST, goods dispatched on confirmation.</span></span></label>
+          <label class="pay-opt"><input type="radio" name="pay">
+            <span><b>Request Quotation instead of paying now</b><span>For bulk / dealer / institutional orders — our sales desk replies within 4 working hours.</span></span></label>
+        </div>
+      </div>
+    </div>
+
+    <aside class="sum-box">
+      <h3>Order Summary</h3>
+      <div id="sum"></div>
+      <button class="btn block" style="margin-top:12px" onclick="placeOrder()">Place Order →</button>
+      <p style="font-size:11.5px;color:var(--muted);margin-top:10px">🔒 256-bit encrypted checkout · GST invoice with every order · 7-day replacement on manufacturing defects.</p>
+      <a href="shop.html" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:600">← Continue shopping</a>
+    </aside>
+  </div>
+</div>
+<div id="footer"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+window.pageInit = draw;
+function draw(){
+  const c = cart.get();
+  const ids = Object.keys(c);
+  if(!ids.length){
+    $('#rows').innerHTML = `<div style="padding:34px;text-align:center;color:var(--muted)">Your cart is empty.<br><br><a class="btn" href="shop.html">Browse products</a></div>`;
+    $('#sum').innerHTML = `<div class="sum-line"><span>Subtotal</span><span>${money(0)}</span></div>`;
+    return;
+  }
+  let sub=0, wt=0;
+  $('#rows').innerHTML = ids.map(id=>{
+    const p = PRODUCTS.find(x=>x.id===id); if(!p) return '';
+    const q = c[id]; sub += p.price*q; wt += q*(p.price>20000?25:2);
+    return `<div class="c-row">
+      <img src="${p.img||PH}" onerror="this.onerror=null;this.src='${PH}'" alt="${p.name}">
+      <div class="nm"><b>${p.name}</b><i>${p.brand} · ${money(p.price)} each</i></div>
+      <div class="qty"><button onclick="chg('${id}',-1)">−</button><input value="${q}" readonly aria-label="Quantity"><button onclick="chg('${id}',1)">+</button></div>
+      <div class="pr">${money(p.price*q)}</div>
+    </div>`;
+  }).join('') + `<div style="padding:10px 18px"><button style="border:0;background:none;color:var(--sharp);font-weight:600;font-size:12.5px" onclick="localStorage.removeItem('jkkvc_cart');updateCartCount();draw()">Clear cart</button></div>`;
+  const del = sub>=999?0:250;
+  $('#sum').innerHTML = `
+    <div class="sum-line"><span>Subtotal (${ids.reduce((a,i)=>a+c[i],0)} items)</span><span>${money(sub)}</span></div>
+    <div class="sum-line"><span>Delivery (valley rate)</span><span>${del?money(del):'FREE'}</span></div>
+    <div class="sum-line"><span>GST</span><span>included</span></div>
+    <div class="sum-line total"><span>Total</span><span>${money(sub+del)}</span></div>`;
+}
+window.chg = (id,d) => { setQty(id, (cart.get()[id]||0)+d); updateCartCount(); draw(); };
+window.placeOrder = () => {
+  const c = cart.get();
+  if(!Object.keys(c).length){ alert('Your cart is empty.'); return; }
+  const overlay = document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(3,27,73,.55);z-index:120;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML = `<div style="background:#fff;border-radius:12px;max-width:460px;padding:34px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.35)">
+    <div style="width:64px;height:64px;border-radius:50%;background:var(--green);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">✓</div>
+    <h3 style="color:var(--blue);font-size:20px">Order placed (demo)</h3>
+    <p style="color:var(--muted);font-size:13.5px;margin:10px 0 18px">In production this hands off to <b>Razorpay</b> for UPI / card / net-banking, then creates the WooCommerce order, GST invoice and WhatsApp confirmation — with the option to convert to a dealer quotation.</p>
+    <button class="btn" onclick="this.closest('div[style]').parentElement.remove()">Continue</button></div>`;
+  document.body.appendChild(overlay);
+};
+</script>
+</body>
+</html>
